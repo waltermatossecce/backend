@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bolsasdeidead.springboot.backend.apirest.models.Alumno;
 
-public interface IAlumnoRepository extends JpaRepository<Alumno, Integer>{
+public interface IAlumnoRepository extends JpaRepository<Alumno, Long>{
 
 }

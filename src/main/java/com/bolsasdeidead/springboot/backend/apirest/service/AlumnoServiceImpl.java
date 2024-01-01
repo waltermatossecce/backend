@@ -33,14 +33,14 @@ public class AlumnoServiceImpl implements AlumnoService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Alumno findById(int id) {
+	public Alumno findById(Long id) {
 		// TODO Auto-generated method stub
 		return alumnoRepository.findById(id).orElse(null);
 	}
 
 	@Override
 	@Transactional
-	public void deleteById(int id) {
+	public void deleteById(Long id) {
 		// TODO Auto-generated method stub
 	  alumnoRepository.deleteById(id);	
 	}
