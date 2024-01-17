@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bolsasdeidead.springboot.backend.apirest.models.Alumno;
+import com.bolsasdeidead.springboot.backend.apirest.models.Modalidad;
 import com.bolsasdeidead.springboot.backend.apirest.repositorio.IAlumnoRepository;
 
 
@@ -33,16 +34,22 @@ public class AlumnoServiceImpl implements AlumnoService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Alumno findById(Long id) {
+	public Alumno findById(int id) {
 		// TODO Auto-generated method stub
 		return alumnoRepository.findById(id).orElse(null);
 	}
 
 	@Override
 	@Transactional
-	public void deleteById(Long id) {
+	public void deleteById(int id) {
 		// TODO Auto-generated method stub
 	  alumnoRepository.deleteById(id);	
+	}
+
+	@Override
+	public List<Modalidad> findAllModalidad() {
+		// TODO Auto-generated method stub
+		return alumnoRepository.findAllModalidad();
 	}
 	
 }

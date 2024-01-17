@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bolsasdeidead.springboot.backend.apirest.models.Alumno;
+import com.bolsasdeidead.springboot.backend.apirest.models.Modalidad;
 import com.bolsasdeidead.springboot.backend.apirest.service.AlumnoService;
 
 @CrossOrigin(origins = {"*"})
@@ -38,9 +39,9 @@ public class AlumnoRestController {
 	}
 	
 	@GetMapping("/alumnos/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable int id) {
 		
-		Alumno alumno =null;
+		Alumno alumno =alumnoService.findById(id);
 		Map<String, Object>resultado = new HashMap<>();
 		
 		try {
@@ -52,7 +53,7 @@ public class AlumnoRestController {
 		    return new ResponseEntity<Map<String, Object>>(resultado,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if (alumno==null) {
-			resultado.put("mensaje", "El cliente ID : ".concat(id.toString()).concat(": ").concat(" no existe en la base de datos!"));
+			//resultado.put("mensaje", "El cliente ID : ".concat(id).concat(": ").concat(" no existe en la base de datos!"));
 		    return new ResponseEntity<Map<String, Object>>(resultado,HttpStatus.NOT_FOUND);
 		}
        return new ResponseEntity<Alumno>(alumno,HttpStatus.OK);
@@ -61,17 +62,31 @@ public class AlumnoRestController {
 	@PostMapping("/alumnos")
 	public ResponseEntity<?> create(@RequestBody Alumno alumno) {
 		
-		Alumno nuevoAlumno=null;
-         
-		Map<String, Object>response = new HashMap<>();
+		Alumno nuevoAlumno = new Alumno();
+
+		Map<String, Object>response = new HashMap<>(); 
 		
+		System.out.println(">>>>>>>>>>" + nuevoAlumno.getId());
 		try {
-			nuevoAlumno= alumnoService.save(alumno);
+			
+			nuevoAlumno.setId(999);
+			nuevoAlumno.setDni("12345678");
+			nuevoAlumno.setApellido("asd");
+			nuevoAlumno.setEmail("asd@gmail.com");
+			nuevoAlumno.setNombre("asd");
+			nuevoAlumno.setSexo("masculino");
+			nuevoAlumno.setTelefono("987654321");
+			Modalidad modalidad = new Modalidad();
+			modalidad.setId(1);
+			nuevoAlumno.setModalidad(modalidad); 
+			
+			nuevoAlumno= alumnoService.save(nuevoAlumno);
 
 		} catch (DataAccessException e) {
 			// TODO: handle exception
 			response.put("mensaje","Error al realizar el insert en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			System.out.println("+++++++++" + nuevoAlumno);
 		    return new ResponseEntity<Map<String, Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -82,7 +97,7 @@ public class AlumnoRestController {
  		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.CREATED); 
 	}
 	@PutMapping("/alumnos/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id,@RequestBody Alumno alumno) {
+	public ResponseEntity<?> update(@PathVariable int id,@RequestBody Alumno alumno) {
 		
 		
 		Alumno obj= alumnoService.findById(id);
@@ -91,7 +106,7 @@ public class AlumnoRestController {
 		Map<String, Object>resultado = new HashMap<>();
 		
 		 if(obj==null) {
-		    	resultado.put("mensaje", "El alumno ID :".concat(id.toString().concat(" no existe en la base de datos")));
+		    	//resultado.put("mensaje", "El alumno ID :".concat(concat(" no existe en la base de datos")));
 		        return new ResponseEntity<Map<String, Object>>(resultado,HttpStatus.NOT_FOUND);
 		    }
 		try {
@@ -101,6 +116,7 @@ public class AlumnoRestController {
 			obj.setSexo(alumno.getSexo());
 			obj.setDni(alumno.getDni());
 			obj.setTelefono(alumno.getTelefono());
+			obj.setModalidad(alumno.getModalidad());
 			
 			alumnoupdated = alumnoService.save(obj);
 		} catch (DataAccessException e) {
@@ -119,7 +135,7 @@ public class AlumnoRestController {
 	}
 	
 	@DeleteMapping("/alumnos/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable int id) {
 		
 		Map<String, Object>response= new HashMap<>();
 		try {
@@ -133,5 +149,10 @@ public class AlumnoRestController {
 		
 		response.put("mensaje", "El alumno se elimno éxitosamente!");
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK); 
+	}
+	@GetMapping("/alumnos/modalidad")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Modalidad> listaModalidad(){
+		return alumnoService.findAllModalidad();
 	}
 }
