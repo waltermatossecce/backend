@@ -25,20 +25,20 @@ import com.bolsasdeidead.springboot.backend.apirest.service.AlumnoService;
 
 @CrossOrigin(origins = {"*"})
 @RestController
-@RequestMapping(path = "api")
+@RequestMapping(path = "/api/alumnos")
 public class AlumnoRestController {
 	
 	@Autowired
 	private AlumnoService alumnoService;
 	
 
-	@GetMapping("/alumnos")
+	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<Alumno> index(){
 		return alumnoService.findAll();
 	}
 	
-	@GetMapping("/alumnos/{id}")
+	@GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable int id) {
 		
 		Alumno alumno =alumnoService.findById(id);
@@ -59,11 +59,11 @@ public class AlumnoRestController {
        return new ResponseEntity<Alumno>(alumno,HttpStatus.OK);
     }
 	
-	@PostMapping("/alumnos")
+	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Alumno alumno) {
 		
 		Alumno nuevoAlumno = new Alumno();
-
+		Modalidad modalidad = new Modalidad();
 		Map<String, Object>response = new HashMap<>(); 
 		
 		System.out.println(">>>>>>>>>>" + nuevoAlumno.getId());
@@ -76,7 +76,7 @@ public class AlumnoRestController {
 			nuevoAlumno.setNombre("asd");
 			nuevoAlumno.setSexo("masculino");
 			nuevoAlumno.setTelefono("987654321");
-			Modalidad modalidad = new Modalidad();
+			
 			modalidad.setId(1);
 			nuevoAlumno.setModalidad(modalidad); 
 			
@@ -96,7 +96,7 @@ public class AlumnoRestController {
 		
  		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.CREATED); 
 	}
-	@PutMapping("/alumnos/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@PathVariable int id,@RequestBody Alumno alumno) {
 		
 		
@@ -134,7 +134,7 @@ public class AlumnoRestController {
 		
 	}
 	
-	@DeleteMapping("/alumnos/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable int id) {
 		
 		Map<String, Object>response= new HashMap<>();
@@ -150,7 +150,7 @@ public class AlumnoRestController {
 		response.put("mensaje", "El alumno se elimno éxitosamente!");
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK); 
 	}
-	@GetMapping("/alumnos/modalidad")
+	@GetMapping("/modalidad")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Modalidad> listaModalidad(){
 		return alumnoService.findAllModalidad();
