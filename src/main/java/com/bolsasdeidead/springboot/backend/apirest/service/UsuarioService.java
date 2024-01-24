@@ -19,7 +19,7 @@ import com.bolsasdeidead.springboot.backend.apirest.models.Usuario;
 import com.bolsasdeidead.springboot.backend.apirest.repositorio.IUsuarioDao;
 
 @Service
-public class UsuarioService implements UserDetailsService{
+public class UsuarioService implements IUsuarioService,UserDetailsService{
 
 	private Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 	
@@ -43,6 +43,12 @@ public class UsuarioService implements UserDetailsService{
 		        .peek(authority -> logger.info("Role " + authority.getAuthority()))
 				.collect(Collectors.toList());
 		return new User(usuario.getUsername(), usuario.getPassword(), usuario.getEnabled(), true, true, true, authorities);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Usuario findByUsername(String username) {
+		return iUsuarioDao.findByUsername(username);
 	}
 
 

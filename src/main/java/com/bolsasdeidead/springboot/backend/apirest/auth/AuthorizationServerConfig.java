@@ -1,5 +1,7 @@
 package com.bolsasdeidead.springboot.backend.apirest.auth;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
@@ -21,6 +24,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private InfoAdicionalToken infoAdicionalToken;
+	
 	
 	@Autowired
 	@Qualifier("authenticationManager")
@@ -29,7 +35,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		// TODO Auto-generated method stub
 		security.tokenKeyAccess("permitAll()") //permiAll() dar permisos a cualquier usuarios o anonimos
 		.checkTokenAccess("isAuthenticated()"); //Endpoint que verifica el token y su firma
 	}
@@ -37,7 +42,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		// TODO Auto-generated method stub
 		//passwordEncoder para encriptar y codificar la contraseña
 		clients.inMemory().withClient("angularapp")
 		.secret(passwordEncoder.encode("12345"))
@@ -50,10 +54,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		// TODO Auto-generated method stub
-        endpoints.authenticationManager(authenticationManager)
+        
+		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(infoAdicionalToken,accessTokenConverter()));
+	   
+		endpoints.authenticationManager(authenticationManager)
         .tokenStore(tokenStore())
-        .accessTokenConverter(accessTokenConverter());
+        .accessTokenConverter(accessTokenConverter())
+        .tokenEnhancer(tokenEnhancerChain);
+	   
 	}
 
     
