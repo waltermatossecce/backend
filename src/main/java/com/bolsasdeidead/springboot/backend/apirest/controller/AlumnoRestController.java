@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,7 @@ public class AlumnoRestController {
 		return alumnoService.findAll();
 	}
 	
+	@Secured({"ROLE_ADMIN","ROLE_USER"})
 	@GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable int id) {
 		
@@ -59,6 +61,7 @@ public class AlumnoRestController {
        return new ResponseEntity<Alumno>(alumno,HttpStatus.OK);
     }
 	
+	@Secured("ROLE_ADMIN")
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Alumno alumno) {
 		
@@ -96,6 +99,7 @@ public class AlumnoRestController {
 		
  		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.CREATED); 
 	}
+	@Secured("ROLE_ADMIN")
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@PathVariable int id,@RequestBody Alumno alumno) {
 		
@@ -133,7 +137,7 @@ public class AlumnoRestController {
 		return new ResponseEntity<Map<String, Object>>(resultado,HttpStatus.CREATED); 
 		
 	}
-	
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable int id) {
 		
@@ -150,6 +154,7 @@ public class AlumnoRestController {
 		response.put("mensaje", "El alumno se elimno éxitosamente!");
 		return new ResponseEntity<Map<String, Object>>(response,HttpStatus.OK); 
 	}
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/modalidad")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Modalidad> listaModalidad(){
